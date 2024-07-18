@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Proteome Screener {% endblock %}
+{% block content %} 
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+<!--BootStrap-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- css -->
+<link rel="stylesheet" href="{% static 'css/proteomes_screener.css' %}">    
+<!-- js -->
+<script src="{% static 'js/proteomes_screener.js' %}"></script>
+
+<!-- html -->
+ <!-- serach -->
+<div id="id_content"   >
+    <div id="middle" style="width: 90%;  margin: 0 auto;">
+        <div width="100%" >
+            <div class="card-header"  >
+                <h4 style="text-align:left"><b><i class="fas fa-user-cog"></i>  Search </b></h4> 
+            </div> 
+            <form class="form-horizontal SearchForm" style="border-top-left-radius:0;" > 
+                <br>
+                <div>
+                    <!-- allele filter-->
+                    <div style="display: flex; flex-direction: column; margin-left: 300px;">
+                        <label>
+                            <label class="switch">
+                                <input type="checkbox" id="filter-toggle"> 
+                                <span class="slider"></span>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label for="allele">Select the allele you want: &nbsp;</label>
+                        </label>
+                        <!-- allele list -->
+                        <div id="filter-container" style="text-align: center;">
+                            <select id="allele-select" multiple style="width: 230px; height: 150px;">
+                                <option value="DRB1_0101">DRB1_0101</option>
+                                <option value="DRB1_0301">DRB1_0301</option>
+                                <option value="DRB1_0401">DRB1_0401</option>
+                                <option value="DRB1_0405">DRB1_0405</option>
+                                <option value="DRB1_0701">DRB1_0701</option>
+                                <option value="DRB1_0802">DRB1_0802</option>
+                                <option value="DRB1_0901">DRB1_0901</option>
+                                <option value="DRB1_1101">DRB1_1101</option>
+                                <option value="DRB1_1201">DRB1_1201</option>
+                                <option value="DRB1_1302">DRB1_1302</option>
+                                <option value="DRB1_1501">DRB1_1501</option>
+                                <option value="DRB3_0101">DRB3_0101</option>
+                                <option value="DRB3_0202">DRB3_0202</option>
+                                <option value="DRB4_0101">DRB4_0101</option>
+                                <option value="DRB5_0101">DRB5_0101</option>
+                                <option value="HLA_DQA10501_DQB10201">HLA_DQA10501_DQB10201</option>
+                                <option value="HLA_DQA10501_DQB10301">HLA_DQA10501_DQB10301</option>
+                                <option value="HLA_DQA10301_DQB10302">HLA_DQA10301_DQB10302</option>
+                                <option value="HLA_DQA10401_DQB10402">HLA_DQA10401_DQB10402</option>
+                                <option value="HLA_DQA10101_DQB10501">HLA_DQA10101_DQB10501</option>
+                                <option value="HLA_DQA10102_DQB10602">HLA_DQA10102_DQB10602</option>
+                                <option value="HLA_DPA10201_DPB10101">HLA_DPA10201_DPB10101</option>
+                                <option value="HLA_DPA10103_DPB10201">HLA_DPA10103_DPB10201</option>
+                                <option value="HLA_DPA10103_DPB10401">HLA_DPA10103_DPB10401</option>
+                                <option value="HLA_DPA10301_DPB10402">HLA_DPA10301_DPB10402</option>
+                                <option value="HLA_DPA10201_DPB10501">HLA_DPA10201_DPB10501</option>
+                                <option value="HLA_DPA10201_DPB11401">HLA_DPA10201_DPB11401</option>
+                            </select><br><br>
+                            <input type="text" id="selected_alleles" placeholder="Selected alleles " size="100">
+                        </div>
+                    </div><br>
+                    <!-- ID filter-->
+                    <div style="display: flex; flex-direction: column; margin-left: 300px;">
+                        <label>
+                            <label class="switch">
+                                <input type="checkbox" id="filter-ID"> 
+                                <span class="slider"></span>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label for="ID">Select the ID you want: &nbsp;</label>
+                        </label>
+                        <!-- ID list -->
+                        <div id="filter-container-ID" style="text-align: center;">
+                            <select id="ID-select" multiple style="width: 230px; height: 150px;">
+                                <option value="0153037">0153037</option>
+                                <option value="0131287">0131287</option>
+                                <option value="0002060">0002060</option>
+                                <option value="0153518">0153518</option>
+                                <option value="0140422">0140422</option>
+                                <option value="0008992">0008992</option>
+                                <option value="0112284">0112284</option>
+                                <option value="0151954">0151954</option>
+                                <option value="0008504">0008504</option>
+                                <option value="0127867">0127867</option>
+                                <option value="0114582">0114582</option>
+                                <option value="0153748">0153748</option>
+                                <option value="0113513">0113513</option>
+                                <option value="0002602">0002602</option>
+                                <option value="0116168">0116168</option>
+                                <option value="0008599">0008599</option>
+                                <option value="0109002">0109002</option>
+                                <option value="0169932">0169932</option>
+                                <option value="0108288">0108288</option>
+                                <option value="0151918">0151918</option>
+                                <option value="0131008">0131008</option>
+                                <option value="0168289">0168289</option>
+                                <option value="0153939">0153939</option>
+                                <option value="0244836">0244836</option>
+                                <option value="0009295">0009295</option>
+                                <option value="0006367">0006367</option>
+                                <option value="0158064">0158064</option>
+                                <option value="0007639">0007639</option>
+                                <option value="0009252">0009252</option>
+                                <option value="0096661">0096661</option>
+                                <option value="0101696">0101696</option>
+                                <option value="0141459">0141459</option>
+                                <option value="0009112">0009112</option>
+                                <option value="0097513">0097513</option>
+                                <option value="0001874">0001874</option>
+                                <option value="0004992">0004992</option>
+                                <option value="0000938">0000938</option>
+                                <option value="0007671">0007671</option>
+                                <option value="0116758">0116758</option>
+                                <option value="0009111">0009111</option>
+                                <option value="0171862">0171862</option>
+                                <option value="0004993">0004993</option>
+                                <option value="0008230">0008230</option>
+                                <option value="0167318">0167318</option>
+                                <option value="0156843">0156843</option>
+                                <option value="0009294">0009294</option>
+                                <option value="0008591">0008591</option>
+                                <option value="0119411">0119411</option>
+                                <option value="0008232">0008232</option>
+                                <option value="0112534">0112534</option>
+                                <option value="0112710">0112710</option>
+                                <option value="0134915">0134915</option>
+                                <option value="0006372">0006372</option>
+                                <option value="0247041">0247041</option>
+                                <option value="0118240">0118240</option>
+                                <option value="0009253">0009253</option>
+                                <option value="0170379">0170379</option>
+                                <option value="0503045">0503045</option>
+                                <option value="0158144">0158144</option>
+                                <option value="0000942">0000942</option>
+                                <option value="0168915">0168915</option>
+                                <option value="0009104">0009104</option>
+                                <option value="0000287">0000287</option>
+                                <option value="0007930">0007930</option>
+                                <option value="0129753">0129753</option>
+                                <option value="0154097">0154097</option>
+                                <option value="0052090">0052090</option>
+                                <option value="0009246">0009246</option>
+                                <option value="0103806">0103806</option>
+                                <option value="0006624">0006624</option>
+                                <option value="0127473">0127473</option>
+                                <option value="0163734">0163734</option>
+                                <option value="0007705">0007705</option>
+                                <option value="0148971">0148971</option>
+                                <option value="0140763">0140763</option>
+                                <option value="0120507">0120507</option>
+                                <option value="0117015">0117015</option>
+                                <option value="0006567">0006567</option>
+                            </select><br><br>
+                            <input type="text" id="selected_ID" placeholder="Selected ID " size="100">
+                        </div><br>
+                    </div>
+                    <!-- nm filter-->
+                    <div style="display: flex; flex-direction: column; margin-left: 300px;"> 
+                        <div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-nM" onchange="nMtoggleInput()">
+                                <span class="slider"></span>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label for="nM"> nM  &nbsp;</label>
+                            <select id="nM_condition" name="nM_condition" disabled>
+                                <option value="greater"> > </option>
+                                <option value="less"> < </option>
+                            </select>&nbsp;
+                            <input type="text" id="nM_input" name="nM" disabled><br><br>
+                        </div>
+                    </div>
+                    <!-- Rank BA filter-->
+                    <div style="display: flex; flex-direction: column; margin-left: 300px;"> 
+                        <div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-Rank_BA" onchange="Rank_BA_toggleInput()">
+                                <span class="slider"></span>
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label for="Rank_BA"> Rank BA  &nbsp;</label>
+                            <select id="Rank_BA_condition" name="Rank_BA_condition" disabled>
+                                <option value="greater"> > </option>
+                                <option value="less"> < </option>
+                            </select>&nbsp;
+                            <input type="text" id="Rank_BA_input" name="Rank_BA" disabled><br><br>
+                        </div>
+                    </div>             
+                </div><br>
+                <!-- search button -->
+                <div class="FormOption">
+                    <div class="form-group">    
+                        <div style="text-align: center;">
+                            <br>
+                            <button type="button" value="search" id="screener_submit" class="btn btn-primary">Search</button>
+                            <br>
+                        </div> 
+                    </div>
+                </div><br>
+            </form>
+        </div>
+        <div id="gap"></div>
+        <div id="output"></div>
+    </div>
+</div><br><br> 
+
+<!-- result -->
+<div id="id_content">
+    <div id='result'  style="width: 90%;  margin: 0 auto;"  >
+        <div class="card " > 
+            <div class="card-header">
+                <h4 style="text-align:left"><b><i class="fas fa-user-cog"></i>  Result </b></h4> 
+            </div>  
+            <div id="ans_table" class="card-body"></div>
+        </div>
+    </div>  
+</div>
+ 
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+<script>
+
+    function nMtoggleInput() {
+        const isChecked = document.getElementById('toggle-nM').checked;
+        document.getElementById('nM_condition').disabled = !isChecked;
+        document.getElementById('nM_input').disabled = !isChecked;
+    }
+    function Rank_BA_toggleInput() {
+        const isChecked = document.getElementById('toggle-Rank_BA').checked;
+        document.getElementById('Rank_BA_condition').disabled = !isChecked;
+        document.getElementById('Rank_BA_input').disabled = !isChecked;
+    }
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterContainer = document.getElementById('filter-container');
+    const IDSelect = document.getElementById('allele-select');
+    const selectedInput = document.getElementById('selected_alleles');
+
+    filterToggle.addEventListener('change', function() {
+        filterContainer.style.display = this.checked ? 'block' : 'none'; // 切換顯示
+        selectedInput.value = ''; // 清空輸入框
+    });
+
+    IDSelect.addEventListener('change', function() {
+        const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+        const uniqueValues = [...new Set(selectedOptions)]; // 確保唯一
+        const currentValues = selectedInput.value ? selectedInput.value.split(', ') : [];
+        const allValues = [...new Set([...currentValues, ...uniqueValues])]; // 合併並確保唯一
+        selectedInput.value = allValues.join(', '); // 用逗號連接
+    });
+// ID
+    const filterID = document.getElementById('filter-ID');
+    const filterIDContainer = document.getElementById('filter-container-ID');
+    const alleleSelect = document.getElementById('ID-select');
+    const selectedIDInput = document.getElementById('selected_ID');
+
+    filterID.addEventListener('change', function() {
+        filterIDContainer.style.display = this.checked ? 'block' : 'none'; // 切換顯示
+        selectedIDInput.value = ''; // 清空輸入框
+    });
+
+    alleleSelect.addEventListener('change', function() {
+        const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+        const uniqueValues = [...new Set(selectedOptions)]; // 確保唯一
+        const currentValues = selectedIDInput.value ? selectedIDInput.value.split(', ') : [];
+        const allValues = [...new Set([...currentValues, ...uniqueValues])]; // 合併並確保唯一
+        selectedIDInput.value = allValues.join(', '); // 用逗號連接
+    });
+    // const filterToggle = document.getElementById('filter-toggle');
+    // const filterContainer = document.getElementById('filter-container');
+    // const IDSelect = document.getElementById('allele-select');
+    // const selectedInput = document.getElementById('selected_alleles');
+
+    // const filterID = document.getElementById('filter-ID');
+    // const filterIDContainer = document.getElementById('filter-container-ID');
+    // const alleleSelect = document.getElementById('ID-select');
+    // const selectedIDInput = document.getElementById('selected_ID');
+
+    // // 处理显示和隐藏容器的逻辑
+    // function toggleFilters(isChecked) {
+    //     filterContainer.style.display = isChecked ? 'block' : 'none';
+    //     filterIDContainer.style.display = isChecked ? 'block' : 'none';
+    //     if (!isChecked) {
+    //         selectedInput.value = ''; // 清空输入框
+    //         selectedIDInput.value = ''; // 清空输入框
+    //     }
+    // }
+
+    // // 处理开关事件
+    // function handleToggleChange() {
+    //     const isChecked = filterToggle.checked;
+    //     filterID.checked = isChecked;
+    //     toggleFilters(isChecked);
+    // }
+
+    // // 处理ID开关事件
+    // function handleIDChange() {
+    //     const isChecked = filterID.checked;
+    //     filterToggle.checked = isChecked;
+    //     toggleFilters(isChecked);
+    // }
+
+    // filterToggle.addEventListener('change', handleToggleChange);
+    // filterID.addEventListener('change', handleIDChange);
+
+    // // 处理选项变更事件
+    // IDSelect.addEventListener('change', function() {
+    //     const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+    //     const uniqueValues = [...new Set(selectedOptions)]; // 确保唯一
+    //     const currentValues = selectedInput.value ? selectedInput.value.split(', ') : [];
+    //     const allValues = [...new Set([...currentValues, ...uniqueValues])]; // 合并并确保唯一
+    //     selectedInput.value = allValues.join(', '); // 用逗号连接
+    // });
+
+    // alleleSelect.addEventListener('change', function() {
+    //     const selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+    //     const uniqueValues = [...new Set(selectedOptions)]; // 确保唯一
+    //     const currentValues = selectedIDInput.value ? selectedIDInput.value.split(', ') : [];
+    //     const allValues = [...new Set([...currentValues, ...uniqueValues])]; // 合并并确保唯一
+    //     selectedIDInput.value = allValues.join(', '); // 用逗号连接
+    // });
+</script>
+
+
+
+
+{% endblock %}
+

@@ -1,0 +1,9 @@
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "web_tool_gene" (
+	"id"	integer NOT NULL,
+	"gene_id"	varchar(100) NOT NULL,
+	"transcript_id"	varchar(100) NOT NULL,
+	"numbers"	integer NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+COMMIT;
